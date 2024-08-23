@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "919653786464",
+    "project_id": "auth-app04",
+    "storage_bucket": "auth-app04.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:919653786464:android:2943ac461f04efa5ebb405",
+        "android_client_info": {
+          "package_name": "com.example.auth.app04"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBJObTLC2VAt8qpKZsI5-hwADQFo1V5ko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:919653786464:android:90bf2d9a6ba7c20cebb405",
+        "android_client_info": {
+          "package_name": "com.example.auth_app04"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBJObTLC2VAt8qpKZsI5-hwADQFo1V5ko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
