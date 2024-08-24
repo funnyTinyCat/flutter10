@@ -1,5 +1,7 @@
+import 'package:auth_app04/components/drawer.dart';
 import 'package:auth_app04/components/my_textfield.dart';
 import 'package:auth_app04/components/wall_post.dart';
+import 'package:auth_app04/pages/profile_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +33,8 @@ class _HomePageState extends State<HomePage> {
 
         'UserEmail': user.email,
         'Message': textController.text,
-        'TimeStamp': Timestamp.now()
+        'TimeStamp': Timestamp.now(),
+        'Likes': [],
       });
 
     }
@@ -40,8 +43,22 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       textController.clear();
     });
-
   }
+
+    // navigate to profile page
+  void goToProfilePage() {
+
+    // pop menu drawer 
+    Navigator.pop(context);
+
+    // go to profile page
+    Navigator.push(
+      context, MaterialPageRoute(
+        builder: (context) => ProfilePage(),
+      )
+    );
+
+  }  
 
   @override
   Widget build(BuildContext context) {
@@ -49,12 +66,16 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
         title: const Text("The Wall"),
-        actions: [
-          IconButton(
-            onPressed: signUserOut, 
-            icon: const Icon(Icons.logout),
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     onPressed: signUserOut, 
+        //     icon: const Icon(Icons.logout),
+        //   ),
+        // ],
+      ),
+      drawer: MyDrawer( 
+        onProfileTap: goToProfilePage,
+        onSignOut: signUserOut,
       ),
       body: Center(
         child: Column(
@@ -76,8 +97,10 @@ class _HomePageState extends State<HomePage> {
                         
                         return WallPost(
                           message: post['Message'], 
-                          user: post['UserEmail']
+                          user: post['UserEmail'],
 //                          time: post['Time'],
+                          postId: post.id,
+                          likes: List<String>.from(post['Likes'] ?? []), 
                         );
                       },  
                     );
