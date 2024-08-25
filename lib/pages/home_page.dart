@@ -1,6 +1,7 @@
 import 'package:auth_app04/components/drawer.dart';
 import 'package:auth_app04/components/my_textfield.dart';
 import 'package:auth_app04/components/wall_post.dart';
+import 'package:auth_app04/helper/helper_methods.dart';
 import 'package:auth_app04/pages/profile_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -98,7 +99,7 @@ class _HomePageState extends State<HomePage> {
                         return WallPost(
                           message: post['Message'], 
                           user: post['UserEmail'],
-//                          time: post['Time'],
+                          time: formatDate(post['TimeStamp']),
                           postId: post.id,
                           likes: List<String>.from(post['Likes'] ?? []), 
                         );
