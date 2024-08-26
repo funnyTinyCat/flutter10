@@ -1,5 +1,6 @@
 import 'package:auth_app04/components/comment.dart';
 import 'package:auth_app04/components/comment_button.dart';
+import 'package:auth_app04/components/delete_button.dart';
 import 'package:auth_app04/components/like_button.dart';
 import 'package:auth_app04/helper/helper_methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -133,56 +134,121 @@ class _WallPostState extends State<WallPost> {
     );
   }
 
+  // delete a post
+  void deletePost() {
+
+    // show a dialog box asking for confirmation before deleting the post
+    showDialog(
+      context: context, 
+      builder: (context) => AlertDialog(
+        title: const Text("Delete Post"),
+        content: const Text("Are you sure you want to delete this post?"),
+        actions: [
+          // cancel button
+          TextButton(
+            onPressed: () => Navigator.pop(context), 
+            child: Text(
+              "Cancel",
+//              style: TextStyle(color: Theme.of(context).colorScheme.secondary,),
+            ),
+          ), 
+
+          // delete button
+          TextButton(
+            onPressed: () async {
+              // delete comments from firestore first
+              final commentDocs = 
+                await FirebaseFirestore.instance.collection("User Posts").doc(widget.postId)
+                  .collection("Comments").get();
+              
+              for (var doc in  commentDocs.docs) {
+
+                await FirebaseFirestore.instance.collection("User Posts").doc(widget.postId)
+                  .collection("Comments").doc(doc.id).delete();
+              }
+
+              // then delete the post
+              FirebaseFirestore.instance.collection("User Posts").doc(widget.postId).delete()
+                .then((value) => print("Post deleted"))
+                .catchError((error) => print("failed to delete post: $error"));
+
+              // dismiss the dialog
+              Navigator.pop(context);
+
+            },           
+            child: Text(
+              "Delete",
+//              style: TextStyle(color: Theme.of(context).colorScheme.secondary,),
+            ),
+          ),
+        ],
+      ),
+    );
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+   //     color: Colors.grey[200],
+        color: Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.circular(10),
       ),
       margin: const EdgeInsets.only(top: 24, left: 24, right: 24,),
       padding: const EdgeInsets.all(24,),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        
         children: [
           // wallpost
-
-          Column(
-            // message and user email
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // message
-              Text(widget.message),
-              
-              const SizedBox(height: 8,),
-
-              // user, time
-              Row(
+              // group of text (message + user email)
+              Column(
+                // message and user email
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    widget.user,
-                    style: TextStyle(color: Colors.grey[400],),
+                  // message
+                  Text(widget.message),
+                  
+                  const SizedBox(height: 8,),
+              
+                  // user, time
+                  Row(
+                    children: [
+                      Text(
+                        widget.user,
+                        style: TextStyle(color: Colors.grey[400],),
+                      ),
+                      Text(
+                        " - ",
+                        style: TextStyle(color: Colors.grey[400],)
+                      ),
+                      Text(
+                        widget.time,
+                        style: TextStyle(color: Colors.grey[400],)    
+                      ),
+                    ],
                   ),
-                  Text(
-                    " - ",
-                    style: TextStyle(color: Colors.grey[400],)
-                  ),
-                  Text(
-                    widget.time,
-                    style: TextStyle(color: Colors.grey[400],)    
-                  ),
+              
+              
+                  // user
+                  // Text(
+                  //   widget.user,
+                  //   style: TextStyle(
+                  //     color: Colors.grey[500],
+                  //   ),
+                  // ),
                 ],
               ),
-
-
-              // user
-              // Text(
-              //   widget.user,
-              //   style: TextStyle(
-              //     color: Colors.grey[500],
-              //   ),
-              // ),
+              // delete button
+              if (widget.user == currentUser.email)
+                DeleteButton(
+                  onTap: deletePost,
+                ),
             ],
           ),
 
